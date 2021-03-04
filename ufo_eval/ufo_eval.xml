@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<!DOCTYPE workflow
+[
+	<!--
+	PROGRAM
+		Main workflow manager for Forecast only Global Forecast System
+
+	AUTHOR:
+		Rahul Mahajan
+		rahul.mahajan@noaa.gov
+
+	NOTES:
+		This workflow was automatically generated at 2021-03-04 11:43:22.642545
+	-->
+
+	<!-- Experiment parameters such as name, cycle, resolution -->
+	<!ENTITY PSLOT    "ufo_eval">
+	<!ENTITY CDUMP    "gdas">
+	<!ENTITY CASE     "C768">
+
+	<!-- Experiment parameters such as starting, ending dates -->
+	<!ENTITY SDATE    "202012141800">
+	<!ENTITY EDATE    "202101131800">
+	<!ENTITY INTERVAL "06:00:00">
+
+	<!-- Run Envrionment -->
+	<!ENTITY RUN_ENVIR "emc">
+
+	<!-- Experiment related directories -->
+	<!ENTITY EXPDIR "/work/noaa/da/Cory.R.Martin/noscrub/UFO_eval/para/ufo_eval">
+	<!ENTITY ROTDIR "/work/noaa/da/Cory.R.Martin/noscrub/UFO_eval/ROTDIRS/ufo_eval">
+	<!ENTITY ICSDIR "/work/noaa/da/Cory.R.Martin/noscrub/UFO_eval/ROTDIRS/FV3ICS">
+
+	<!-- Directories for driving the workflow -->
+	<!ENTITY HOMEgfs  "/work/noaa/da/cmartin/noscrub/UFO_eval/global-workflow">
+	<!ENTITY JOBS_DIR "/work/noaa/da/cmartin/noscrub/UFO_eval/global-workflow/jobs/rocoto">
+
+	<!-- Machine related entities -->
+	<!ENTITY ACCOUNT    "da-cpu">
+	<!ENTITY QUEUE      "batch">
+	<!ENTITY QUEUE_SERVICE "service">
+	<!ENTITY PARTITION_BATCH "orion">
+	<!ENTITY PARTITION_SERVICE "service">
+	<!ENTITY SCHEDULER  "slurm">
+
+	<!-- Toggle HPSS archiving -->
+	<!ENTITY ARCHIVE_TO_HPSS "YES">
+
+	<!-- ROCOTO parameters that control workflow -->
+	<!ENTITY CYCLETHROTTLE "2">
+	<!ENTITY TASKTHROTTLE  "25">
+	<!ENTITY MAXTRIES      "2">
+
+	<!-- BEGIN: Resource requirements for the workflow -->
+
+	<!ENTITY QUEUE_GETIC_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_GETIC_GFS "&PARTITION_SERVICE;">
+	<!ENTITY WALLTIME_GETIC_GFS  "06:00:00">
+	<!ENTITY RESOURCES_GETIC_GFS "<nodes>1:ppn=1:tpp=1</nodes>">
+	<!ENTITY MEMORY_GETIC_GFS    "2048M">
+	<!ENTITY NATIVE_GETIC_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_FV3IC_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_FV3IC_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_FV3IC_GFS  "00:30:00">
+	<!ENTITY RESOURCES_FV3IC_GFS "<nodes>1:ppn=1:tpp=24</nodes>">
+	<!ENTITY NATIVE_FV3IC_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_WAVEINIT_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_WAVEINIT_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_WAVEINIT_GFS  "00:10:00">
+	<!ENTITY RESOURCES_WAVEINIT_GFS "<nodes>1:ppn=40:tpp=1</nodes>">
+	<!ENTITY NATIVE_WAVEINIT_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_WAVEPREP_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_WAVEPREP_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_WAVEPREP_GFS  "00:30:00">
+	<!ENTITY RESOURCES_WAVEPREP_GFS "<nodes>2:ppn=40:tpp=1</nodes>">
+	<!ENTITY NATIVE_WAVEPREP_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_FCST_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_FCST_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_FCST_GFS  "01:00:00">
+	<!ENTITY RESOURCES_FCST_GFS "<nodes>122:ppn=10:tpp=4</nodes>">
+	<!ENTITY NATIVE_FCST_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_POST_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_POST_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_POST_GFS  "06:00:00">
+	<!ENTITY RESOURCES_POST_GFS "<nodes>8:ppn=12:tpp=1</nodes>">
+	<!ENTITY NATIVE_POST_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_WAVEPOSTSBS_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_WAVEPOSTSBS_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_WAVEPOSTSBS_GFS  "06:00:00">
+	<!ENTITY RESOURCES_WAVEPOSTSBS_GFS "<nodes>1:ppn=40:tpp=1</nodes>">
+	<!ENTITY NATIVE_WAVEPOSTSBS_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_WAVEPOSTBNDPNT_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_WAVEPOSTBNDPNT_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_WAVEPOSTBNDPNT_GFS  "02:00:00">
+	<!ENTITY RESOURCES_WAVEPOSTBNDPNT_GFS "<nodes>7:ppn=40:tpp=1</nodes>">
+	<!ENTITY NATIVE_WAVEPOSTBNDPNT_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_WAVEPOSTPNT_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_WAVEPOSTPNT_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_WAVEPOSTPNT_GFS  "02:00:00">
+	<!ENTITY RESOURCES_WAVEPOSTPNT_GFS "<nodes>7:ppn=40:tpp=1</nodes>">
+	<!ENTITY NATIVE_WAVEPOSTPNT_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_WAVEGEMPAK_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_WAVEGEMPAK_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_WAVEGEMPAK_GFS  "01:00:00">
+	<!ENTITY RESOURCES_WAVEGEMPAK_GFS "<nodes>1:ppn=40:tpp=1</nodes>">
+	<!ENTITY NATIVE_WAVEGEMPAK_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_WAVEAWIPSBULLS_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_WAVEAWIPSBULLS_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_WAVEAWIPSBULLS_GFS  "00:30:00">
+	<!ENTITY RESOURCES_WAVEAWIPSBULLS_GFS "<nodes>1:ppn=40:tpp=1</nodes>">
+	<!ENTITY NATIVE_WAVEAWIPSBULLS_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_WAVEAWIPSGRIDDED_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_WAVEAWIPSGRIDDED_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_WAVEAWIPSGRIDDED_GFS  "00:30:00">
+	<!ENTITY RESOURCES_WAVEAWIPSGRIDDED_GFS "<nodes>1:ppn=40:tpp=1</nodes>">
+	<!ENTITY NATIVE_WAVEAWIPSGRIDDED_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_WAFS_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_WAFS_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_WAFS_GFS  "00:30:00">
+	<!ENTITY RESOURCES_WAFS_GFS "<nodes>1:ppn=1:tpp=1</nodes>">
+	<!ENTITY NATIVE_WAFS_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_WAFSGRIB2_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_WAFSGRIB2_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_WAFSGRIB2_GFS  "00:30:00">
+	<!ENTITY RESOURCES_WAFSGRIB2_GFS "<nodes>1:ppn=1:tpp=1</nodes>">
+	<!ENTITY NATIVE_WAFSGRIB2_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_WAFSBLENDING_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_WAFSBLENDING_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_WAFSBLENDING_GFS  "00:30:00">
+	<!ENTITY RESOURCES_WAFSBLENDING_GFS "<nodes>1:ppn=1:tpp=1</nodes>">
+	<!ENTITY NATIVE_WAFSBLENDING_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_WAFSGCIP_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_WAFSGCIP_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_WAFSGCIP_GFS  "00:30:00">
+	<!ENTITY RESOURCES_WAFSGCIP_GFS "<nodes>2:ppn=1:tpp=1</nodes>">
+	<!ENTITY NATIVE_WAFSGCIP_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_WAFSGRIB20P25_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_WAFSGRIB20P25_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_WAFSGRIB20P25_GFS  "00:30:00">
+	<!ENTITY RESOURCES_WAFSGRIB20P25_GFS "<nodes>1:ppn=1:tpp=1</nodes>">
+	<!ENTITY NATIVE_WAFSGRIB20P25_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_WAFSBLENDING0P25_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_WAFSBLENDING0P25_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_WAFSBLENDING0P25_GFS  "00:30:00">
+	<!ENTITY RESOURCES_WAFSBLENDING0P25_GFS "<nodes>1:ppn=1:tpp=1</nodes>">
+	<!ENTITY NATIVE_WAFSBLENDING0P25_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_VRFY_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_VRFY_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_VRFY_GFS  "06:00:00">
+	<!ENTITY RESOURCES_VRFY_GFS "<nodes>1:ppn=1:tpp=1</nodes>">
+	<!ENTITY NATIVE_VRFY_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_METP_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_METP_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_METP_GFS  "06:00:00">
+	<!ENTITY RESOURCES_METP_GFS "<nodes>1:ppn=4:tpp=1</nodes>">
+	<!ENTITY NATIVE_METP_GFS    "--export=NONE">
+
+	<!ENTITY QUEUE_ARCH_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_ARCH_GFS "&PARTITION_SERVICE;">
+	<!ENTITY WALLTIME_ARCH_GFS  "06:00:00">
+	<!ENTITY RESOURCES_ARCH_GFS "<nodes>1:ppn=1:tpp=1</nodes>">
+	<!ENTITY MEMORY_ARCH_GFS    "2048M">
+	<!ENTITY NATIVE_ARCH_GFS    "--export=NONE">
+
+	<!-- END: Resource requirements for the workflow -->
+
+]>
+
+<workflow realtime="F" scheduler="&SCHEDULER;" cyclethrottle="&CYCLETHROTTLE;" taskthrottle="&TASKTHROTTLE;">
+
+	<log verbosity="10"><cyclestr>&EXPDIR;/logs/@Y@m@d@H.log</cyclestr></log>
+
+	<!-- Define the cycles -->
+	<cycledef group="gfs">&SDATE; &EDATE; &INTERVAL;</cycledef>
+
+<task name="gfsfcst" cycledefs="gfs" maxtries="&MAXTRIES;">
+
+	<command>&JOBS_DIR;/fcst.sh</command>
+
+	<jobname><cyclestr>&PSLOT;_gfsfcst_@H</cyclestr></jobname>
+	<account>&ACCOUNT;</account>
+	<queue>&QUEUE_FCST_GFS;</queue>
+	<partition>&PARTITION_BATCH;</partition>
+	&RESOURCES_FCST_GFS;
+	<walltime>&WALLTIME_FCST_GFS;</walltime>
+	
+	<native>&NATIVE_FCST_GFS;</native>
+
+	<join><cyclestr>&ROTDIR;/logs/@Y@m@d@H/gfsfcst.log</cyclestr></join>
+
+	<envar><name>RUN_ENVIR</name><value>&RUN_ENVIR;</value></envar>
+	<envar><name>HOMEgfs</name><value>&HOMEgfs;</value></envar>
+	<envar><name>EXPDIR</name><value>&EXPDIR;</value></envar>
+	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>CDUMP</name><value>&CDUMP;</value></envar>
+	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+
+	<dependency>
+			<or>
+				<datadep><cyclestr>&ICSDIR;/@Y@m@d@H/&CDUMP;/&CASE;/INPUT/sfc_data.tile6.nc</cyclestr></datadep>
+				<datadep><cyclestr>&ROTDIR;/&CDUMP;.@Y@m@d/@H/atmos/RESTART/@Y@m@d.@H0000.sfcanl_data.tile6.nc</cyclestr></datadep>
+			</or>
+	</dependency>
+
+</task>
+</workflow>
