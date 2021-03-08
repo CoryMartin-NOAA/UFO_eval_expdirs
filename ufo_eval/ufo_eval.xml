@@ -29,7 +29,8 @@
 	<!-- Experiment related directories -->
 	<!ENTITY EXPDIR "/work/noaa/da/Cory.R.Martin/noscrub/UFO_eval/para/ufo_eval">
 	<!ENTITY ROTDIR "/work/noaa/da/Cory.R.Martin/noscrub/UFO_eval/ROTDIRS/ufo_eval">
-	<!ENTITY ICSDIR "/work/noaa/da/Cory.R.Martin/noscrub/UFO_eval/ROTDIRS/FV3ICS">
+	<!ENTITY ICSDIR "/work/noaa/da/Cory.R.Martin/noscrub/UFO_eval/GFS/v15ops">
+  <!ENTITY OUTDIR "/work/noaa/da/Cory.R.Martin/noscrub/UFO_eval/GFS/para/c768_v15ics_v16tag">
 
 	<!-- Directories for driving the workflow -->
 	<!ENTITY HOMEgfs  "/work/noaa/da/cmartin/noscrub/UFO_eval/global-workflow">
@@ -181,6 +182,12 @@
 	<!ENTITY MEMORY_ARCH_GFS    "2048M">
 	<!ENTITY NATIVE_ARCH_GFS    "--export=NONE">
 
+	<!ENTITY QUEUE_UFO_GFS     "&QUEUE;">
+	<!ENTITY PARTITION_UFO_GFS "&PARTITION_BATCH;">
+	<!ENTITY WALLTIME_UFO_GFS  "00:01:00">
+	<!ENTITY RESOURCES_UFO_GFS "<nodes>1:ppn=1:tpp=1</nodes>">
+	<!ENTITY NATIVE_UFO_GFS    "--export=NONE">
+
 	<!-- END: Resource requirements for the workflow -->
 
 ]>
@@ -191,6 +198,33 @@
 
 	<!-- Define the cycles -->
 	<cycledef group="gfs">&SDATE; &EDATE; &INTERVAL;</cycledef>
+
+<task name="gfsprep" cycledefs="gfs" maxtries="&MAXTRIES;">
+	<command>&JOBS_DIR;/ufofcst.sh</command>
+	<jobname><cyclestr>&PSLOT;_gfsprep_@H</cyclestr></jobname>
+	<account>&ACCOUNT;</account>
+	<queue>&QUEUE_UFO_GFS;</queue>
+	<partition>&PARTITION_BATCH;</partition>
+	&RESOURCES_UFO_GFS;
+	<walltime>&WALLTIME_UFO_GFS;</walltime>
+	
+	<native>&NATIVE_UFO_GFS;</native>
+	<join><cyclestr>&ROTDIR;/logs/@Y@m@d@H/gfsprep.log</cyclestr></join>
+
+	<envar><name>RUN_ENVIR</name><value>&RUN_ENVIR;</value></envar>
+	<envar><name>HOMEgfs</name><value>&HOMEgfs;</value></envar>
+	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>CDUMP</name><value>&CDUMP;</value></envar>
+	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+  <envar><name>ICSDIR</name><value>&ICSDIR;</value></envar>
+  <envar><name>ROTDIR</name><value>&ROTDIR;</value></envar>
+
+	<dependency>
+		<datadep><cyclestr>&ICSDIR;/&CDATE;/&CDUMP;.@Y@m@d/@H/RESTART/@Y@m@d.@H0000.sfcanl_data.tile6.nc</cyclestr></datadep>
+	</dependency>
+
+</task>
 
 <task name="gfsfcst" cycledefs="gfs" maxtries="&MAXTRIES;">
 
@@ -216,11 +250,35 @@
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
 
 	<dependency>
-			<or>
-				<datadep><cyclestr>&ICSDIR;/@Y@m@d@H/&CDUMP;/&CASE;/INPUT/sfc_data.tile6.nc</cyclestr></datadep>
-				<datadep><cyclestr>&ROTDIR;/&CDUMP;.@Y@m@d/@H/atmos/RESTART/@Y@m@d.@H0000.sfcanl_data.tile6.nc</cyclestr></datadep>
-			</or>
+		<datadep><cyclestr>&ROTDIR;/&CDUMP;.@Y@m@d/@H/atmos/RESTART/@Y@m@d.@H0000.sfcanl_data.tile6.nc</cyclestr></datadep>
 	</dependency>
 
 </task>
+<task name="gfsarch" cycledefs="gfs" maxtries="&MAXTRIES;">
+	<command>&JOBS_DIR;/ufoarch.sh</command>
+	<jobname><cyclestr>&PSLOT;_gfsarch_@H</cyclestr></jobname>
+	<account>&ACCOUNT;</account>
+	<queue>&QUEUE_UFO_GFS;</queue>
+	<partition>&PARTITION_BATCH;</partition>
+	&RESOURCES_UFO_GFS;
+	<walltime>&WALLTIME_UFO_GFS;</walltime>
+	
+	<native>&NATIVE_UFO_GFS;</native>
+	<join><cyclestr>&ROTDIR;/logs/@Y@m@d@H/gfsarch.log</cyclestr></join>
+
+	<envar><name>RUN_ENVIR</name><value>&RUN_ENVIR;</value></envar>
+	<envar><name>HOMEgfs</name><value>&HOMEgfs;</value></envar>
+	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>CDUMP</name><value>&CDUMP;</value></envar>
+	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+  <envar><name>ARCHDIR</name><value>&OUTDIR;</value></envar>
+  <envar><name>ROTDIR</name><value>&ROTDIR;</value></envar>
+
+	<dependency>
+    <taskdep>gfsfcst</taskdep>
+	</dependency>
+
+</task>
+
 </workflow>
