@@ -48,7 +48,7 @@
 	<!ENTITY ARCHIVE_TO_HPSS "YES">
 
 	<!-- ROCOTO parameters that control workflow -->
-	<!ENTITY CYCLETHROTTLE "2">
+	<!ENTITY CYCLETHROTTLE "1">
 	<!ENTITY TASKTHROTTLE  "25">
 	<!ENTITY MAXTRIES      "2">
 
@@ -200,7 +200,7 @@
 	<cycledef group="gfs">&SDATE; &EDATE; &INTERVAL;</cycledef>
 
 <task name="gfsprep" cycledefs="gfs" maxtries="&MAXTRIES;">
-	<command>&JOBS_DIR;/ufofcst.sh</command>
+	<command>&JOBS_DIR;/ufoprep.sh</command>
 	<jobname><cyclestr>&PSLOT;_gfsprep_@H</cyclestr></jobname>
 	<account>&ACCOUNT;</account>
 	<queue>&QUEUE_UFO_GFS;</queue>
@@ -221,7 +221,7 @@
   <envar><name>ROTDIR</name><value>&ROTDIR;</value></envar>
 
 	<dependency>
-		<datadep><cyclestr>&ICSDIR;/&CDATE;/&CDUMP;.@Y@m@d/@H/RESTART/@Y@m@d.@H0000.sfcanl_data.tile6.nc</cyclestr></datadep>
+		<datadep>&ICSDIR;<cyclestr offset="06:00:00">/@Y@m@d@H/</cyclestr><cyclestr>&CDUMP;.@Y@m@d/@H/RESTART/@Y@m@d.@H0000.sfcanl_data.tile6.nc</cyclestr></datadep>
 	</dependency>
 
 </task>
@@ -254,6 +254,7 @@
 	</dependency>
 
 </task>
+
 <task name="gfsarch" cycledefs="gfs" maxtries="&MAXTRIES;">
 	<command>&JOBS_DIR;/ufoarch.sh</command>
 	<jobname><cyclestr>&PSLOT;_gfsarch_@H</cyclestr></jobname>
@@ -272,11 +273,12 @@
 	<envar><name>CDUMP</name><value>&CDUMP;</value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+  <envar><name>ICSDIR</name><value>&ICSDIR;</value></envar>
   <envar><name>ARCHDIR</name><value>&OUTDIR;</value></envar>
   <envar><name>ROTDIR</name><value>&ROTDIR;</value></envar>
 
 	<dependency>
-    <taskdep>gfsfcst</taskdep>
+    <taskdep task="gfsfcst"/>
 	</dependency>
 
 </task>

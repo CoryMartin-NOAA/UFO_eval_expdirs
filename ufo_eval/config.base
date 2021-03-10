@@ -165,11 +165,11 @@ export gfs_cyc=4 # 0: no GFS cycle, 1: 00Z only, 2: 00Z and 12Z only, 4: all 4 c
 # GFS output and frequency
 export FHMIN_GFS=0
 
-export FHMAX_GFS_00=9
-export FHMAX_GFS_06=9
-export FHMAX_GFS_12=9
-export FHMAX_GFS_18=9
-export FHMAX_GFS=9
+export FHMAX_GFS_00=10
+export FHMAX_GFS_06=10
+export FHMAX_GFS_12=10
+export FHMAX_GFS_18=10
+export FHMAX_GFS=10
 
 export FHOUT_GFS=1
 export FHMAX_HF_GFS=0
@@ -177,7 +177,7 @@ export FHOUT_HF_GFS=1
 export ILPOST=1           # gempak output frequency up to F120
 
 # GFS restart interval in hours
-export restart_interval_gfs="3 4 5 6 7 8 9"
+export restart_interval="3 4 5 6 7 8 9"
 
 
 # I/O QUILTING, true--use Write Component; false--use GFDL FMS
